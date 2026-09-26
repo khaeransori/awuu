@@ -515,6 +515,8 @@ function syncToggles() {
   for (const id of ['sMusic', 'pMusic']) $(id).classList.toggle('on', save.settings.music);
   for (const id of ['sSfx', 'pSfx']) $(id).classList.toggle('on', save.settings.sfx);
   document.querySelectorAll('#sQuality button').forEach((b) => b.classList.toggle('on', b.dataset.q === save.settings.quality));
+  $('sFs').classList.toggle('on', save.settings.fullscreen !== false);
+  $('sFs').hidden = !canFullscreen(); // iPhone Safari: no element fullscreen (installed app is already fullscreen)
 }
 function toggleMusic() { save.settings.music = !save.settings.music; setMusic(save.settings.music); persist(); syncToggles(); }
 function toggleSfx() { save.settings.sfx = !save.settings.sfx; setSfx(save.settings.sfx); persist(); syncToggles(); sfx.click(); }
@@ -539,13 +541,31 @@ function on(id, fn) {
     fn(e);
   });
 }
+function isFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+}
+function canFullscreen() {
+  const el = document.documentElement;
+  return !!(el.requestFullscreen || el.webkitRequestFullscreen);
+}
+// Fullscreen is on by default. Browsers only allow it inside a user gesture,
+// so we (re)enter on the first tap and on every button tap while enabled.
 function goFullscreen() {
-  if (!touch) return;
+  if (save.settings.fullscreen === false || isFullscreen() || !canFullscreen()) return;
   try {
     const el = document.documentElement;
-    const p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: 'hide' }) : el.webkitRequestFullscreen && el.webkitRequestFullscreen();
+    const p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: 'hide' }) : el.webkitRequestFullscreen();
     if (p && p.then) p.then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => {});
   } catch (e) {}
+}
+function exitFullscreen() {
+  if (!isFullscreen()) return;
+  try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {}
+}
+function toggleFs() {
+  save.settings.fullscreen = save.settings.fullscreen === false;
+  persist(); syncToggles(); sfx.click();
+  if (save.settings.fullscreen) goFullscreen(); else exitFullscreen();
 }
 on('btnPlay', () => { sfx.click(); goFullscreen(); openLevels('level'); });
 on('btnFree', () => { sfx.click(); goFullscreen(); openLevels('free'); });
@@ -563,6 +583,7 @@ on('btnNext', () => { sfx.click(); startLevel(curLevel + 1, 'level'); });
 on('sMusic', toggleMusic);
 on('pMusic', toggleMusic);
 on('sSfx', toggleSfx);
+on('sFs', toggleFs);
 on('pSfx', toggleSfx);
 document.querySelectorAll('#sQuality button').forEach((b) =>
   b.addEventListener('click', () => { save.settings.quality = b.dataset.q; adapt = 1; persist(); syncToggles(); resize(); sfx.click(); })
@@ -586,6 +607,8 @@ function firstTap() {
   window.removeEventListener('keydown', firstTap, true);
 }
 window.addEventListener('pointerdown', firstTap, true);
+window.addEventListener('click', (e) => { if (!(e.target.closest && e.target.closest('#sFs'))) goFullscreen(); }, true);
+window.addEventListener('keydown', (e) => { if (e.key !== 'Escape') goFullscreen(); }, true);
 window.addEventListener('keydown', firstTap, true);
 
 // ============================================================ input

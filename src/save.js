@@ -8,7 +8,7 @@ function fresh() {
     skin: 'abu',
     album: {},
     total: 0,
-    settings: { music: true, sfx: true, quality: 'auto' },
+    settings: { music: true, sfx: true, quality: 'auto', fullscreen: true },
     tutorialDone: false,
   };
 }
