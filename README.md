@@ -2,14 +2,16 @@
 
 Game 3D kotak-kotak ala Roblox untuk anak. Kamu jadi serigala dan harus menangkap kucing sebanyak-banyaknya sebelum waktu habis. Game ini dimainkan dengan sentuhan di HP, bisa jalan tanpa internet, dan semuanya ada dalam satu file HTML.
 
+**Main sekarang:** https://khaeransori.github.io/awuu/
+
 ## Main di HP
 
-1. Buka alamat GitHub Pages repo ini di Chrome (Android) atau Safari (iPhone).
+1. Buka https://khaeransori.github.io/awuu/ di Chrome (Android) atau Safari (iPhone).
 2. Android: menu titik tiga › **Instal aplikasi** / **Tambahkan ke Layar utama**.
    iPhone: tombol Bagikan › **Tambah ke Layar Utama**.
 3. Setelah itu game bisa dimainkan tanpa internet, dan progresnya (bintang, medali, skin) tersimpan di HP.
 
-Alternatif tanpa hosting: unduh `awuu.html` lalu buka di Chrome. Di beberapa HP Android, progres tidak tersimpan kalau dibuka dari file. Kalau itu terjadi, game otomatis membuka semua pulau.
+Alternatif tanpa hosting: unduh [awuu.html](https://khaeransori.github.io/awuu/awuu.html) lalu buka di Chrome. Di beberapa HP Android, progres tidak tersimpan kalau dibuka dari file. Kalau itu terjadi, game otomatis membuka semua pulau.
 
 ## Isi game
 
