@@ -21,7 +21,8 @@ const fontCss = [500, 600, 700]
   .map((w) => `@font-face{font-family:'Fredoka';font-style:normal;font-weight:${w};font-display:swap;src:url(data:font/woff2;base64,${font(w)}) format('woff2');}`)
   .join('');
 const css = fs.readFileSync('src/style.css', 'utf8');
-const body = fs.readFileSync('src/body.html', 'utf8');
+const BUILD = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') + ' WIB';
+const body = fs.readFileSync('src/body.html', 'utf8').replace('__BUILD__', BUILD);
 const title = 'Awuu! Serigala Tangkap Kucing';
 
 // Full standalone document (offline file / PWA)
