@@ -38,9 +38,23 @@ fs.writeFileSync(`${dir}/sw.js`, `const CACHE = '${version}';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable.png', './apple-touch-icon.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
+// Halaman game: network-first (versi terbaru langsung tampil saat online),
+// jatuh ke cache kalau offline atau jaringan lambat (>4 dtk).
+// Ikon & manifest: cache-first.
+function fresh(req) {
+  const net = fetch(req, { cache: 'no-cache' }).then((res) => {
+    if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put('./index.html', copy)); }
+    return res;
+  });
+  const slow = new Promise((ok) => setTimeout(ok, 4000)).then(() => caches.match('./index.html'));
+  return Promise.race([net, slow.then((hit) => hit || net)]).catch(() => caches.match('./index.html'));
+}
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then((hit) => hit || fetch(e.request).catch(() => caches.match('./index.html'))));
+  const url = new URL(e.request.url);
+  if (url.origin !== location.origin) return;
+  if (e.request.mode === 'navigate' || url.pathname.endsWith('/index.html')) { e.respondWith(fresh(e.request)); return; }
+  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then((hit) => hit || fetch(e.request)));
 });
 `);
 
@@ -48,7 +62,7 @@ let html = fs.readFileSync('dist/awuu.html', 'utf8');
 html = html.replace('<!--PWA-->', `<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">`);
-html = html.replace('<!--SW-->', `<script>if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(function(){});</script>`);
+html = html.replace('<!--SW-->', `<script>if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(function(){});</script>`);
 fs.writeFileSync(`${dir}/index.html`, html);
 
 fs.writeFileSync(`${dir}/CARA-PASANG.txt`, `AWUU! SERIGALA TANGKAP KUCING — versi aplikasi (PWA)
