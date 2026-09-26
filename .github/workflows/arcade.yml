@@ -32,9 +32,9 @@ jobs:
         run: |
           # game.json & thumb.jpg dikelola server (katalog arcade), jangan dihapus
           rsync -rtz --delete --exclude game.json --exclude thumb.jpg --exclude .deployed --exclude CARA-PASANG.txt \
-            -e "ssh -i ~/.ssh/arcade" dist/pwa/ ubuntu@43.156.226.121:
+            -e "ssh -i ~/.ssh/arcade" dist/pwa/ ubuntu@${{ secrets.ARCADE_HOST }}:
           date -u +%FT%TZ > .deployed
-          rsync -t -e "ssh -i ~/.ssh/arcade" .deployed ubuntu@43.156.226.121:.deployed
+          rsync -t -e "ssh -i ~/.ssh/arcade" .deployed ubuntu@${{ secrets.ARCADE_HOST }}:.deployed
       - name: Cek live
         run: |
           sleep 5
