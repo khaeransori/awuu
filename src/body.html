@@ -1,0 +1,184 @@
+<div id="app">
+  <canvas id="c"></canvas>
+
+  <div id="hud" hidden>
+    <div class="hud-top">
+      <div id="scoreCard" class="chip">
+        <div class="score-row">
+          <span class="lbl">Poin</span><b id="score">0</b>
+          <span class="cc"><i id="ccIcon"></i><b id="count">0</b></span>
+        </div>
+        <div class="bar"><div class="fill" id="barFill"></div><span class="mark"></span><span class="mark"></span><span class="mark"></span></div>
+      </div>
+      <div id="timer" class="chip">1:30</div>
+      <div class="hud-right">
+        <button id="btnPause" class="icon-btn" aria-label="Jeda"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+        <div id="powers"></div>
+      </div>
+    </div>
+    <div id="hint" hidden></div>
+    <div id="combo" hidden></div>
+    <div id="banner" hidden></div>
+    <div id="toast" hidden></div>
+  </div>
+  <div id="arrows"></div>
+  <div id="floaters"></div>
+
+  <div id="controls" hidden>
+    <div id="stickZone"></div>
+    <div id="stick"><div id="knob"></div></div>
+    <div id="actions">
+      <button class="act" id="btnHowl" aria-label="Auuu">
+        <svg viewBox="0 0 24 24"><path d="M15.5 3.2A9 9 0 1 0 20.8 15 7 7 0 0 1 15.5 3.2z"/></svg><span>AUUU</span>
+      </button>
+      <button class="act" id="btnPounce" aria-label="Terkam">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="5" ry="4.2"/><circle cx="5.6" cy="10.6" r="2.1"/><circle cx="9.4" cy="6.6" r="2.2"/><circle cx="14.6" cy="6.6" r="2.2"/><circle cx="18.4" cy="10.6" r="2.1"/></svg><span>TERKAM</span>
+      </button>
+      <button class="act big" id="btnJump" aria-label="Lompat">
+        <svg viewBox="0 0 24 24"><path d="M12 3l8 9h-5v8H9v-8H4z"/></svg><span>LOMPAT</span>
+      </button>
+    </div>
+  </div>
+  <div id="keysHint" hidden><b>WASD</b> lari · <b>Spasi</b> lompat · <b>J</b> terkam · <b>K</b> auuu · <b>P</b> jeda</div>
+
+  <!-- TITLE -->
+  <section id="scrTitle" class="screen" hidden>
+    <div class="title-wrap">
+      <div class="title-col">
+        <h1 class="logo" aria-label="Awuu!"><span>A</span><span>W</span><span>U</span><span>U</span><span>!</span></h1>
+        <p class="tagline">Serigala Tangkap Kucing</p>
+        <button class="btn big green" id="btnPlay">MAIN</button>
+        <div class="title-row">
+          <button class="btn blue" id="btnFree">Main Bebas</button>
+          <button class="btn white" id="btnSkins">Serigalaku</button>
+          <button class="btn white" id="btnAlbum">Album</button>
+        </div>
+        <p class="tiny" id="saveNote" hidden></p>
+      </div>
+    </div>
+    <button class="btn white sq corner" id="btnSettings" aria-label="Pengaturan"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1c.5.4 1.1.7 1.7 1l.4 2.5h4l.4-2.5c.6-.3 1.2-.6 1.7-1l2.4 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button>
+    <p class="tap-first" id="tapFirst">Ketuk layar untuk mulai</p>
+  </section>
+
+  <!-- LEVEL SELECT -->
+  <section id="scrLevels" class="screen" hidden>
+    <div class="top-bar">
+      <button class="btn white sq back" data-back aria-label="Kembali"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <h2 id="levelsTitle">Pilih Pulau</h2>
+      <div class="counters"><span class="pill"><i class="i-star"></i><b id="totStars">0</b>/15</span><span class="pill"><i class="i-medal"></i><b id="totMedals">0</b>/10</span></div>
+    </div>
+    <div class="levels" id="levelList"></div>
+  </section>
+
+  <!-- INTRO -->
+  <section id="scrIntro" class="screen dim" hidden>
+    <div class="panel intro wide">
+      <div class="cols">
+        <div class="col">
+          <p class="eyebrow" id="inEyebrow">Pulau 1</p>
+          <h2 id="inName">Taman Bunga</h2>
+          <p id="inText"></p>
+          <div class="targets" id="inTargets"></div>
+        </div>
+        <div class="col">
+          <div class="tip" id="inTip"></div>
+          <p class="warn" id="inWarn" hidden></p>
+          <div class="missions" id="inMissions"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn white" data-back>Kembali</button>
+        <button class="btn big green" id="btnStart">MULAI!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAUSE -->
+  <section id="scrPause" class="screen dim" hidden>
+    <div class="panel narrow">
+      <h2>Istirahat dulu</h2>
+      <div class="stack">
+        <button class="btn big green" id="btnResume">LANJUT</button>
+        <button class="btn blue" id="btnRestart">Ulangi</button>
+        <button class="btn white" id="btnQuit">Keluar</button>
+      </div>
+      <div class="toggles">
+        <button class="tog" id="pMusic">Musik</button>
+        <button class="tog" id="pSfx">Suara</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="scrResult" class="screen dim" hidden>
+    <div class="panel result wide">
+      <div class="cols">
+        <div class="col center">
+          <h2 id="rsTitle">Hebat!</h2>
+          <div class="bigstars" id="rsStars"></div>
+          <div class="rs-score"><div><span>Poin</span><b id="rsScore">0</b></div><div><span>Kucing</span><b id="rsCount">0</b></div><div id="rsBestBox"><span>Rekor</span><b id="rsBest">0</b></div></div>
+          <p class="newbest" id="rsNew" hidden>REKOR BARU!</p>
+        </div>
+        <div class="col">
+          <div class="breakdown" id="rsBreak"></div>
+          <div class="missions" id="rsMissions"></div>
+          <div class="unlocks" id="rsUnlocks"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn white" id="btnMenu">Menu</button>
+        <button class="btn blue" id="btnAgain">Ulangi</button>
+        <button class="btn big green" id="btnNext">LANJUT</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKINS -->
+  <section id="scrSkins" class="screen" hidden>
+    <div class="top-bar">
+      <button class="btn white sq back" data-back aria-label="Kembali"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <h2>Serigalaku</h2>
+      <div class="counters"><span class="pill"><i class="i-star"></i><b class="jsStars">0</b></span><span class="pill"><i class="i-medal"></i><b class="jsMedals">0</b></span></div>
+    </div>
+    <div class="skins" id="skinList"></div>
+  </section>
+
+  <!-- ALBUM -->
+  <section id="scrAlbum" class="screen dim" hidden>
+    <div class="panel album">
+      <div class="top-bar inpanel">
+        <h2>Album Kucing</h2>
+        <button class="btn white sq" data-back aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button>
+      </div>
+      <p class="sub" id="albumTotal"></p>
+      <div class="album-grid" id="albumGrid"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="scrSettings" class="screen dim" hidden>
+    <div class="panel narrow">
+      <div class="top-bar inpanel">
+        <h2>Pengaturan</h2>
+        <button class="btn white sq" data-back aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="toggles">
+        <button class="tog" id="sMusic">Musik</button>
+        <button class="tog" id="sSfx">Suara</button>
+      </div>
+      <p class="lbl2">Grafis</p>
+      <div class="seg" id="sQuality">
+        <button data-q="hemat">Hemat</button><button data-q="auto">Normal</button><button data-q="bagus">Bagus</button>
+      </div>
+      <p class="lbl2">Untuk orang tua</p>
+      <div class="stack">
+        <button class="btn white" id="btnUnlockAll">Buka semua pulau</button>
+        <button class="btn white" id="btnReset">Hapus progres</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="countdown" hidden></div>
+  <div id="rotateTip" hidden>Miringkan HP biar layarnya lebih luas</div>
+  <div id="loading"><div class="logo small"><span>A</span><span>W</span><span>U</span><span>U</span><span>!</span></div><p>Menyiapkan pulau...</p></div>
+</div>

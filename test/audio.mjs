@@ -1,0 +1,32 @@
+import { chromium } from 'playwright';
+import path from 'path';
+const file = 'file://' + path.resolve('dist/awuu.html');
+const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
+const page = await browser.newPage({ viewport: { width: 844, height: 390 }, hasTouch: true });
+const errors = [];
+page.on('pageerror', (e) => errors.push(e.message));
+page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.type() + ': ' + m.text().slice(0, 300)); });
+await page.goto(file);
+await page.waitForTimeout(1000);
+await page.mouse.click(400, 200);
+await page.waitForTimeout(1500);
+// fire every sfx through gameplay paths
+await page.evaluate(() => { window.__awuu.save.unlocked = 5; document.getElementById('btnPlay').click(); });
+await page.evaluate(() => document.querySelectorAll('.lcard')[3].click());
+await page.waitForTimeout(500);
+await page.evaluate(() => document.getElementById('btnStart').click());
+await page.waitForTimeout(3500);
+await page.evaluate(() => {
+  const g = window.__awuu.game;
+  g.inp.jump = true; g.inp.pounce = true;
+  g.wolf.howlMeter = 1; g.inp.howl = true;
+  g.spawnGold();
+  g.applyPower('tulang', g.wolf.body.pos); g.applyPower('ikan', g.wolf.body.pos); g.applyPower('jam', g.wolf.body.pos);
+  g.wolf.hitBy(g.wolf.body.pos.clone().add({x:1,y:0,z:0}), 1);
+  const c = g.cats[0]; g.catchCat(c);
+});
+await page.waitForTimeout(2500);
+const st = await page.evaluate(() => ({ time: window.__awuu.game.timeLeft }));
+console.log('state', JSON.stringify(st));
+console.log(errors.length ? [...new Set(errors)].join('\n') : 'no audio errors');
+await browser.close();

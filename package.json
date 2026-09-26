@@ -1,0 +1,29 @@
+{
+  "name": "awuu",
+  "version": "1.0.0",
+  "description": "Awuu! Serigala Tangkap Kucing — game 3D kotak-kotak untuk anak, jalan offline di HP.",
+  "scripts": {
+    "build": "node build.mjs && node pwa.mjs",
+    "serve": "python3 -m http.server 8080 --directory dist/pwa",
+    "test:smoke": "node test/smoke.mjs",
+    "test:ui": "node test/ui.mjs",
+    "test:levels": "node test/levels.mjs",
+    "test:boss": "node test/boss.mjs",
+    "test:pwa": "node test/pwa.mjs",
+    "sim": "node test/sim.mjs",
+    "perf": "node test/perf.mjs"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@fontsource/fredoka": "^5.3.0",
+    "esbuild": "^0.28.2",
+    "three": "^0.186.1"
+  },
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "playwright": "^1.56.0",
+    "sharp": "^0.35.4"
+  }
+}
