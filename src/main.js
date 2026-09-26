@@ -607,6 +607,8 @@ function firstTap() {
   window.removeEventListener('keydown', firstTap, true);
 }
 window.addEventListener('pointerdown', firstTap, true);
+// Re-unlock audio on every real gesture (iOS needs touchend/click, and re-locks after interruptions)
+for (const ev of ['touchend', 'click', 'keydown']) window.addEventListener(ev, () => initAudio(), true);
 window.addEventListener('click', (e) => { if (!(e.target.closest && e.target.closest('#sFs'))) goFullscreen(); }, true);
 window.addEventListener('keydown', (e) => { if (e.key !== 'Escape') goFullscreen(); }, true);
 window.addEventListener('keydown', firstTap, true);

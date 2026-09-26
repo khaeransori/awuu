@@ -2,9 +2,20 @@
 let ctx = null, master, sfxBus, musBus, noiseBuf, comp;
 export const audioState = { sfx: true, music: true };
 
+let userPaused = false;
+// iPhone: keep playing when the ringer switch is on silent (like a video/game app).
+try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+
+// iOS Safari only unlocks audio inside touchend/click, and can leave the
+// context 'suspended' or 'interrupted' (calls, lock screen, app switch).
+// Call this from every user gesture; it is cheap once running.
 export function initAudio() {
   if (ctx) {
-    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    if (ctx.state !== 'running' && !userPaused) {
+      ctx.resume().catch(() => {});
+      // iOS sometimes needs a sound started inside the same gesture
+      try { const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0); } catch (e) {}
+    }
     return;
   }
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -14,6 +25,8 @@ export function initAudio() {
   } catch (e) {
     return;
   }
+  try { const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0); } catch (e) {}
+  if (ctx.state !== 'running') ctx.resume().catch(() => {});
   comp = ctx.createDynamicsCompressor();
   comp.threshold.value = -14;
   comp.ratio.value = 4;
@@ -34,6 +47,7 @@ export function initAudio() {
   if (pendingSong) playMusic(pendingSong);
 }
 export function suspendAudio(on) {
+  userPaused = on;
   if (!ctx) return;
   if (on) ctx.suspend().catch(() => {});
   else ctx.resume().catch(() => {});
